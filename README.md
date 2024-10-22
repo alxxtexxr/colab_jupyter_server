@@ -1,10 +1,16 @@
 # Colab Jupyter Server
-I created this because I want to use Colab/Kaggle as a remote Jupyter server, which I can connect to as a kernel for my local Jupyter notebook in VS Code.
+I created this library because I want to use Colab/Kaggle as a remote Jupyter server, which I can connect to as a kernel for my local Jupyter notebook in VS Code.
 
 ## How to run
-Just run this command:
+Install the library first:
 ```
-colab_jupyter_server --ngrok_authtoken=<YOUR_NGROK_AUTHTOKEN>
+pip install colab-jupyter-server
+```
+Then, run this command:
+```
+colab_jupyter_server \
+--ngrok_authtoken=<NGROK_AUTHTOKEN> \
+--jupyter_password=<JUPYTER_PASSWORD>
 ```
 
 ### Command Parameters

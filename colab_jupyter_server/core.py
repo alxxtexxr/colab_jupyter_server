@@ -44,9 +44,9 @@ def set_jupyter_password(jupyter_password):
             print("Something wrong!")
             print()
 
-def cleanup():
+def cleanup(port):
     # Kill Jupyter, if it exists
-    run_cmd('pkill -9 jupyter; echo "Jupyter is cleaned up"')
+    run_cmd(f'lsof -ti :{port} | xargs kill -9; echo "Jupyter is cleaned up"')
     
     # Kill ngrok, if it exists
     run_cmd('pkill -9 ngrok; echo "ngrok is cleaned up"')
@@ -82,7 +82,7 @@ def create_jupyter_server(
     # Authenticate ngrok agent
     run_cmd(f'./ngrok config add-authtoken {ngrok_authtoken}')
 
-    cleanup()
+    cleanup(port)
 
     try:
         # Run Jupyter Notebook in the background using '&' at the end
@@ -101,12 +101,12 @@ def create_jupyter_server(
         signal.pause()
     except KeyboardInterrupt:
         print("Interrupted!")
-        cleanup()
+        cleanup(port)
         sys.exit(0)
 
     except Exception as e:
         print(f"Something wrong! {e}")
-        cleanup()
+        cleanup(port)
         sys.exit(1)
 
 def main(): 
