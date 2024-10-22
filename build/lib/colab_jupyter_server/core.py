@@ -6,7 +6,6 @@ import requests
 import time
 import signal
 import sys
-from jupyter_server.auth import passwd
 
 def run_cmd(cmd):
     print(f">>> !{cmd}")
@@ -27,22 +26,19 @@ def run_cmd_bg(cmd, show_output=True):
     if not show_output:
         print()
 
-def set_jupyter_password(jupyter_password):
-    if jupyter_password:
-        passwd(str(jupyter_password))
+def set_jupyter_password():
+    cmd = 'jupyter notebook password'
+    print(f">>> !{cmd}")
+    process = subprocess.Popen(cmd, shell=True, text=True, 
+                               stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = process.communicate()
+    if out:
+        print(out)
+    elif err:
+        print(err)
     else:
-        cmd = 'jupyter notebook password'
-        print(f">>> !{cmd}")
-        process = subprocess.Popen(cmd, shell=True, text=True, 
-                                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = process.communicate()
-        if out:
-            print(out)
-        elif err:
-            print(err)
-        else:
-            print("Something wrong!")
-            print()
+        print("Something wrong!")
+        print()
 
 def cleanup():
     # Kill Jupyter, if it exists
@@ -58,13 +54,12 @@ def create_jupyter_server(
     ngrok_down_url = 'https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz', # Linux (x86-64)
     # ngrok_down_url = 'https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-darwin-arm64.zip', # Mac OS - Apple Silicon (ARM64)
 
-    jupyter_password = None,
     port = 8888,
-    wait_time = 3, # (Seconds)
+    wait_time = 5, # (Seconds)
 ):
     # Set up Jupyter Notebook
     run_cmd('jupyter notebook --JupyterApp.generate_config=True --JupyterApp.answer_yes=True')
-    set_jupyter_password(jupyter_password)
+    set_jupyter_password()
 
     if not os.path.exists('ngrok'):
         # Download ngrok
