@@ -6,6 +6,7 @@ import requests
 import time
 import signal
 import sys
+import json
 from jupyter_server.auth import passwd
 
 def run_cmd(cmd, show_output=True):
@@ -34,7 +35,7 @@ def set_jupyter_password(jupyter_password):
     if jupyter_password:
         passwd(str(jupyter_password))
     else:
-        cmd = 'jupyter server password'
+        cmd = 'jupyter notebook password'
         print(f">>> !{cmd}")
         process = subprocess.Popen(cmd, shell=True, text=True, 
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -54,6 +55,17 @@ def cleanup(port):
     # Kill ngrok, if it exists
     run_cmd('pkill -9 ngrok; echo "ngrok is cleaned up"')
 
+def get_jupyter_server_info(port):
+    r = requests.get('http://localhost:4040/api/tunnels')
+    url = r.json()['tunnels'][0]['public_url']
+
+    res = subprocess.run('jupyter notebook list --jsonlist', shell=True, capture_output=True, text=True)
+    out = res.stdout
+    notebook_list = json.loads(out)
+    token = next((nb['token'] for nb in notebook_list if nb['port'] == port), None)
+
+    return url, token
+
 def create_jupyter_server(
     ngrok_authtoken,
 
@@ -61,15 +73,15 @@ def create_jupyter_server(
     ngrok_down_url = 'https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz', # Linux (x86-64)
     # ngrok_down_url = 'https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-darwin-arm64.zip', # Mac OS - Apple Silicon (ARM64)
 
-    jupyter_password = None,
+    # jupyter_password = None,
     port = 8889,
     wait_time = 3, # (Seconds)
 ):
     # Set up Jupyter Notebook
-    run_cmd('jupyter server --ServerApp.generate_config=True --ServerApp.allow_remote_access=True --ServerApp.answer_yes=True')
+    run_cmd('jupyter notebook --ServerApp.generate_config=True --ServerApp.allow_remote_access=True --ServerApp.answer_yes=True')
     # run_cmd('echo "c.ServerApp.allow_remote_access = True" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
     # run_cmd('echo "c.NotebookApp.open_browser = False" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
-    set_jupyter_password(jupyter_password)
+    # set_jupyter_password(jupyter_password)
 
     if not os.path.exists('ngrok'):
         # Download ngrok
@@ -91,17 +103,17 @@ def create_jupyter_server(
 
     try:
         # Run Jupyter Notebook in the background using '&' at the end
-        run_cmd_bg(f'jupyter server --allow-root --port={port}', show_output=False)
+        run_cmd_bg(f'jupyter notebook --allow-root --no-browser --port={port}', show_output=False)
         
         # Run ngrok server
         run_cmd_bg(f'./ngrok http {port}', show_output=False)
 
-        print(f"Waiting for Jupyter server URL... ({wait_time}s)")
+        print(f"Waiting for Jupyter server info... ({wait_time}s)")
         time.sleep(wait_time)
 
-        r = requests.get('http://localhost:4040/api/tunnels')
-        jupyter_server_url = r.json()['tunnels'][0]['public_url']
-        print("Jupyter server URL:", jupyter_server_url)
+        url, token = get_jupyter_server_info(port)
+        print("Jupyter server URL:", url)
+        print("Jupyter server token:", (token if token else '""'))
 
         signal.pause()
     except KeyboardInterrupt:
