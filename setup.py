@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'colab_jupyter_server',
-    version = '0.4.0', # Versioning follows the pattern MAJOR.MINOR.PATCH
+    version = '0.4.1', # Versioning follows the pattern MAJOR.MINOR.PATCH
     author = 'alxxtexxr',
     author_email = 'alimtegar404@gmail.com',
     description='Colab/Kaggle as Jupyter a server and kernel',

@@ -62,11 +62,11 @@ def create_jupyter_server(
     # ngrok_down_url = 'https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-darwin-arm64.zip', # Mac OS - Apple Silicon (ARM64)
 
     jupyter_password = None,
-    port = 8888,
+    port = 8889,
     wait_time = 3, # (Seconds)
 ):
     # Set up Jupyter Notebook
-    run_cmd('jupyter server --JupyterApp.generate_config=True --JupyterApp.answer_yes=True')
+    run_cmd('jupyter server --ServerApp.generate_config=True --ServerApp.allow_remote_access=True --ServerApp.answer_yes=True')
     # run_cmd('echo "c.ServerApp.allow_remote_access = True" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
     # run_cmd('echo "c.NotebookApp.open_browser = False" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
     set_jupyter_password(jupyter_password)
@@ -91,7 +91,7 @@ def create_jupyter_server(
 
     try:
         # Run Jupyter Notebook in the background using '&' at the end
-        run_cmd_bg(f'jupyter server --port={port}', show_output=False)
+        run_cmd_bg(f'jupyter server --allow-root --port={port}', show_output=False)
         
         # Run ngrok server
         run_cmd_bg(f'./ngrok http {port}', show_output=False)
@@ -101,7 +101,7 @@ def create_jupyter_server(
 
         r = requests.get('http://localhost:4040/api/tunnels')
         jupyter_server_url = r.json()['tunnels'][0]['public_url']
-        print("Access Jupyter server URL on:", jupyter_server_url)
+        print("Jupyter server URL:", jupyter_server_url)
 
         signal.pause()
     except KeyboardInterrupt:
