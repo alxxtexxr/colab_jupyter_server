@@ -1,4 +1,4 @@
-jupyter
+# jupyter
 fire
 patool
 requests

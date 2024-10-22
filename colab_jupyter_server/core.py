@@ -75,7 +75,7 @@ def create_jupyter_server(
 
     # jupyter_password = None,
     port = 8889,
-    wait_time = 3, # (Seconds)
+    wait_time = 10, # (Seconds)
 ):
     # Set up Jupyter Notebook
     run_cmd('jupyter notebook --ServerApp.generate_config=True --ServerApp.allow_remote_access=True --ServerApp.answer_yes=True')

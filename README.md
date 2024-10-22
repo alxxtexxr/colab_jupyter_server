@@ -4,13 +4,11 @@ I created this library because I want to use Colab/Kaggle as a remote Jupyter se
 ## How to run
 Install the library first:
 ```
-pip install colab-jupyter-server
+pip install -U colab-jupyter-server
 ```
 Then, run this command:
 ```
-colab_jupyter_server \
---ngrok_authtoken=<NGROK_AUTHTOKEN> \
---jupyter_password=<JUPYTER_PASSWORD>
+colab_jupyter_server --ngrok_authtoken=<NGROK_AUTHTOKEN>
 ```
 
 ### Command Parameters
@@ -18,6 +16,8 @@ colab_jupyter_server \
 
 - `ngrok_down_url`: The default download URL is for ngrok on Linux (x86-64) (https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz). Find other download URLs here: https://ngrok.com/download
 
-- `jupyter_password`: The Jupyter server password. You will be asked for a password if not set.
+<!-- - `jupyter_password`: The Jupyter server password. You will be asked for a password if not set. -->
 
-- `port`: The default port is 8888.
+- `port`: The default port is 8889. **Avoid using port 8888**, as it is already in use by the notebook you open in Colab/Kaggle.
+
+- `wait_time`: The duration to wait for the Jupyter server info to be retrieved. The default is 10s. **A shorter wait time may result in failure to retrieve the Jupyter serrver token, returning an empty token.**
