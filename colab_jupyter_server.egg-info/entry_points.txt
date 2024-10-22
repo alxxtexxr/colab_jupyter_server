@@ -1,2 +1,0 @@
-[console_scripts]
-colab_jupyter_server = colab_jupyter_server.core:main
