@@ -8,15 +8,18 @@ import signal
 import sys
 from jupyter_server.auth import passwd
 
-def run_cmd(cmd):
+def run_cmd(cmd, show_output=True):
     print(f">>> !{cmd}")
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-    if res.stdout:
-        print(res.stdout)
-    elif res.stderr:
-        print(res.stderr)
+    if show_output:
+        if res.stdout:
+            print(res.stdout)
+        elif res.stderr:
+            print(res.stderr)
+        else:
+            print("Something wrong!")
+            print()
     else:
-        print("Something wrong!")
         print()
 
 def run_cmd_bg(cmd, show_output=True):
@@ -64,6 +67,8 @@ def create_jupyter_server(
 ):
     # Set up Jupyter Notebook
     run_cmd('jupyter notebook --JupyterApp.generate_config=True --JupyterApp.answer_yes=True')
+    run_cmd('echo "c.NotebookApp.allow_remote_access = True" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
+    run_cmd('echo "c.NotebookApp.open_browser = False" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
     set_jupyter_password(jupyter_password)
 
     if not os.path.exists('ngrok'):
@@ -86,7 +91,7 @@ def create_jupyter_server(
 
     try:
         # Run Jupyter Notebook in the background using '&' at the end
-        run_cmd_bg(f'jupyter notebook --allow-root --no-browser --port={port}', show_output=False)
+        run_cmd_bg(f'jupyter notebook --allow-root --port={port}', show_output=False)
         
         # Run ngrok server
         run_cmd_bg(f'./ngrok http {port}', show_output=False)
