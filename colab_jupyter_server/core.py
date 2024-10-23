@@ -9,9 +9,9 @@ import sys
 import json
 from jupyter_server.auth import passwd
 
-def run_cmd(cmd, show_output=True):
+def run_cmd(cmd, input=None, show_output=True):
     print(f">>> !{cmd}")
-    res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    res = subprocess.run(cmd, shell=True, capture_output=True, text=True, input=input)
     if show_output:
         if res.stdout:
             print(res.stdout)
@@ -78,8 +78,8 @@ def create_jupyter_server(
     wait_time = 10, # (Seconds)
 ):
     # Set up Jupyter Notebook
-    run_cmd('jupyter notebook --ServerApp.generate_config=True --ServerApp.allow_remote_access=True --ServerApp.answer_yes=True')
-    # run_cmd('echo "c.ServerApp.allow_remote_access = True" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
+    run_cmd('jupyter notebook --generate-config', input='y\n')
+    run_cmd('echo "c.NotebookApp.allow_remote_access = True" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
     # run_cmd('echo "c.NotebookApp.open_browser = False" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
     # set_jupyter_password(jupyter_password)
 
