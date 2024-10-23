@@ -55,7 +55,7 @@ def cleanup(port):
     # Kill ngrok, if it exists
     run_cmd('pkill -9 ngrok; echo "ngrok is cleaned up"')
 
-def get_jupyter_server_info(port):
+def get_jupyter_server_url(port):
     r = requests.get('http://localhost:4040/api/tunnels')
     url = r.json()['tunnels'][0]['public_url']
 
@@ -64,7 +64,7 @@ def get_jupyter_server_info(port):
     notebook_list = json.loads(out)
     token = next((nb['token'] for nb in notebook_list if nb['port'] == port), None)
 
-    return url, token
+    return f'{url}?token={token}'
 
 def create_jupyter_server(
     ngrok_authtoken,
@@ -108,12 +108,11 @@ def create_jupyter_server(
         # Run ngrok server
         run_cmd_bg(f'./ngrok http {port}', show_output=False)
 
-        print(f"Waiting for Jupyter server info... ({wait_time}s)")
+        print(f"Waiting for Jupyter server URL... ({wait_time}s)")
         time.sleep(wait_time)
 
-        url, token = get_jupyter_server_info(port)
+        url = get_jupyter_server_url(port)
         print("Jupyter server URL:", url)
-        print("Jupyter server token:", (token if token else '""'))
 
         signal.pause()
     except KeyboardInterrupt:
