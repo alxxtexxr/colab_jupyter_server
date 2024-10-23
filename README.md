@@ -26,4 +26,4 @@ Jupyter server URL: https://xy12-34-567-890-123.ngrok-free.app?token=<JUPYTER_SE
 
 - `port`: The default port is 8889. **Avoid using port 8888**, as it is already in use by the notebook you open in Colab/Kaggle.
 
-- `wait_time`: The duration to wait for the Jupyter server info to be retrieved. The default is 10s. **A shorter wait time may result in failure to retrieve the Jupyter serrver token, returning an empty token.**
+- `wait_time`: The duration to wait for the Jupyter server URL to be retrieved. The default is 10s. **A shorter wait time may result in failure to retrieve the Jupyter serrver token, returning an empty token.**
