@@ -2,3 +2,4 @@ ngrok*
 build
 colab_jupyter_server.egg-info
 dist
+test*
