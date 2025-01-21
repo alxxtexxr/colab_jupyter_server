@@ -28,5 +28,7 @@ Jupyter server URL: https://xy12-34-567-890-123.ngrok-free.app?token=<JUPYTER_SE
 
 - `wait_time`: The duration time to wait for the Jupyter server URL to be retrieved. The default is 10s. **A shorter wait time may result in failure to retrieve the Jupyter server token, returning an empty token.**
 
+<!--
 ## To Do
 - [ ] Handle the error when ngrok agent can't run due to limitation of 1 active tunnel for free users.
+-->
