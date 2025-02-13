@@ -112,7 +112,8 @@ def create_jupyter_server(
         time.sleep(wait_time)
 
         url = get_jupyter_server_url(port)
-        print("Jupyter server URL:", url)
+        print("Jupyter server URL:")
+        print(url)
 
         signal.pause()
     except KeyboardInterrupt:
