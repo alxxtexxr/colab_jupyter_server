@@ -3,3 +3,4 @@ build
 colab_jupyter_server.egg-info
 dist
 test*
+.DS_Store

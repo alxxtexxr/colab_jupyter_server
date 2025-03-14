@@ -8,19 +8,30 @@ pip install -U colab-jupyter-server
 ```
 Then, run this command:
 ```
-colab_jupyter_server --ngrok_authtoken=<NGROK_AUTHTOKEN>
+colab_jupyter_server \
+--ngrok_authtoken=<YOUR_NGROK_AUTHTOKEN> \
+--domain=<YOUR_DOMAIN>
 ```
 
 ### Expected Last Output
 ```
 Waiting for Jupyter server URL... (10s)
-Jupyter server URL: https://xy12-34-567-890-123.ngrok-free.app?token=<JUPYTER_SERVER_TOKEN>
+Jupyter server URL: 
+<YOUR_DOMAIN>?token=<JUPYTER_SERVER_TOKEN>
+```
+Or, if `domain` is not set:
+```
+Waiting for Jupyter server URL... (10s)
+Jupyter server URL: 
+https://xy12-34-567-890-123.ngrok-free.app?token=<JUPYTER_SERVER_TOKEN>
 ```
 
 ### Command Parameters
 - `ngrok_authtoken`: Your ngrok authtoken. You can get it here: https://dashboard.ngrok.com/get-started/your-authtoken
 
 - `ngrok_down_url`: The default download URL is for ngrok on Linux (x86-64) (https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz). Find other download URLs here: https://ngrok.com/download
+
+- `domain`: Your custom domain URL, which will be used as the Jupyter server URL. If not set, ngrok will generate a random URL each time the server starts. To keep the server URL consistent at a low cost, you can create and use a free domain from ngrok here: https://dashboard.ngrok.com/domains
 
 <!-- - `jupyter_password`: The Jupyter server password. You will be asked for a password if not set. -->
 
