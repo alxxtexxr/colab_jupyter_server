@@ -74,6 +74,7 @@ def create_jupyter_server(
     # ngrok_down_url = 'https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-darwin-arm64.zip', # Mac OS - Apple Silicon (ARM64)
 
     domain = None,
+    password = None,
     # jupyter_password = None,
     port = 8889,
     wait_time = 10, # (Seconds)
@@ -104,10 +105,11 @@ def create_jupyter_server(
 
     try:
         # Run Jupyter Notebook in the background using '&' at the end
-        run_cmd_bg(f'jupyter notebook --allow-root --no-browser --port={port}', show_output=False)
+        password = f' --IdentityProvider.token="{password}" --ServerApp.password="{password}" ' if password != None else ' '
+        run_cmd_bg(f'jupyter notebook --allow-root --no-browser --port={port}{password}', show_output=False)
         
         # Run ngrok server
-        domain = f' --url={domain} ' if domain else ' '
+        domain = f' --url="{domain}" ' if domain else ' '
         run_cmd_bg(f'./ngrok http{domain}{port}', show_output=False)
 
         print(f"Waiting for Jupyter server URL... ({wait_time}s)")
