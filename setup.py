@@ -26,5 +26,6 @@ setup(
         'fire',
         'patool',
         'requests',
+        'jupyter-server>=2.14',
     ],
 )
