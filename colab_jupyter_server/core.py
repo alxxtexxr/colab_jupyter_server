@@ -79,9 +79,15 @@ def create_jupyter_server(
     port = 8889,
     wait_time = 10, # (Seconds)
 ):
+    if password != None:
+        os.environ['JUPYTER_TOKEN'] = password
+        os.environ['COLAB_JUPYTER_TOKEN'] = password
+
     # Set up Jupyter Notebook
     run_cmd('jupyter notebook --generate-config', input='y\n')
     run_cmd('echo "c.NotebookApp.allow_remote_access = True" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
+    if password != None:
+        run_cmd(f'echo "c.NotebookApp.token = \'{password}\'" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
     # run_cmd('echo "c.NotebookApp.open_browser = False" >> ~/.jupyter/jupyter_notebook_config.py', show_output=False)
     # set_jupyter_password(jupyter_password)
 
@@ -105,8 +111,9 @@ def create_jupyter_server(
 
     try:
         # Run Jupyter Notebook in the background using '&' at the end
-        password = f' --IdentityProvider.token="{password}" --ServerApp.password="{password}" ' if password != None else ' '
-        run_cmd_bg(f'jupyter notebook --allow-root --no-browser --port={port}{password}', show_output=False)
+        # password_arg = f' --IdentityProvider.token="{password}" --ServerApp.password="{password}" ' if password != None else ' '
+        password_arg = ''
+        run_cmd_bg(f'jupyter notebook --allow-root --no-browser --port={port}{password_arg}', show_output=False)
         
         # Run ngrok server
         domain = f' --url="{domain}" ' if domain else ' '
